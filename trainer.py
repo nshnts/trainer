@@ -14,8 +14,6 @@ def generate_program(lifts):
 
     for section in lifts:
         type = section['type']
-        color = section['color']
-
         for lift, excs in section['exercises'].items():
             idx = np.random.randint(0, len(excs))
             program[type].append(excs[idx])
@@ -23,17 +21,18 @@ def generate_program(lifts):
     main, accessories = program.values()
     diff = len(main) - len(accessories)
     if diff > 0:
-        accessories.append(' ' * diff)
+        accessories.extend([ ' ' ] * diff)
     elif -diff > 0:
-        main.append(' ' * -diff)
+        main.extend([ ' ' ] * -diff)
 
     indent = ' ' * 10
     column_a, column_b = [section['type'] for section in lifts]
 
     print()
-    ui.info(ui.green, (indent + '{:20}' + (' ' * 10)).format(column_a), ui.yellow, column_b)
+    ui.info(indent, ui.yellow, ui.underline, ('{:12}' + (' ' * 10)).format(column_a),
+            ui.reset, ' ' * 7, ui.yellow, ui.underline, ('{:12}' + (' ' * 10)).format(column_b))
     for x, y in zip(main, accessories):
-        s = indent + '{:20} ' + (' ' * 10) + '{:20}'
+        s = indent + ' {:20} ' + (' ' * 10) + '{:20}'
         ui.info(s.format(x, y))
     print()
 
@@ -43,7 +42,6 @@ def main():
         # main lifts
         {
             'type': 'Main Lifts',
-            'color': ui.green,
             'exercises': {
                 'squat'    : [ 'Squat', 'Front Squat', 'Pause Squat', 'Pause Front Squat'   ],
                 'dl'       : [ 'Deadlift', 'Romanian Deadlift', 'Single-Leg Deadlift'       ],
@@ -54,7 +52,6 @@ def main():
         #accessories
         {
             'type': 'Accessories',
-            'color': ui.yellow,
             'exercises': {
                 'back'     : [ 'T-Bar Row', 'DB Row', 'Pull-Up', 'Power Clean'              ],
                 'shoulder' : [ 'Press', 'DB Press', 'Seated Press', 'Front Raise'           ],
@@ -70,3 +67,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
