@@ -11,6 +11,12 @@ class Color:
     END = '\033[0m'
 
 
+def get_optimal_align_size(lifts):
+
+    lengths = [[[len(z) for z in y] for y in x] for x in lifts]
+    return max(sum(sum(lengths, []), [])) + 3 # pad with extra 3 spaces
+
+
 def create_weekly_program(lifts, n_days=4):
 
     main, accessories = lifts
@@ -20,13 +26,13 @@ def create_weekly_program(lifts, n_days=4):
     days = [[] for _ in range(n_days)]
 
     for i in range(int(n_days / 2)):
-       for lifts in main:
-          idx = np.random.randint(0, len(lifts))
-          days[i*2].append(lifts[idx])
+       for excs in main:
+          idx = np.random.randint(0, len(excs))
+          days[i*2].append(excs[idx])
 
-       for lifts in accessories:
-          idx = np.random.randint(0, len(lifts))
-          days[i*2 + 1].append(lifts[idx])
+       for excs in accessories:
+          idx = np.random.randint(0, len(excs))
+          days[i*2 + 1].append(excs[idx])
 
        diff = len(days[i*2]) - len(days[i*2 + 1])
        if diff > 0:
@@ -35,7 +41,8 @@ def create_weekly_program(lifts, n_days=4):
           days[i*2].extend([ ' ' ] * -diff)
 
     indent = ' ' * 10
-    align = 30
+    align = get_optimal_align_size(lifts)
+
     s = '\n{}' + ''.join(['{:' + str(align) + '}'] * n_days)
     days_str = [('Day '+str(i+1)) for i in range(n_days)]
     print(Color.GREEN + s.format(indent, *days_str) + Color.END)
