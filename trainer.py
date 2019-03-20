@@ -41,7 +41,7 @@ def generate_program(lifts, workout_name):
 
     print()
 
-    print(indent, ('{:12}' + (' ' * 10)).format(Color.YELLOW + Color.UNDERLINE + column_a+ Color.END),
+    print(indent, ('{:12}' + (' ' * 10)).format(Color.YELLOW + Color.UNDERLINE + column_a + Color.END),
           ' ' * 9, ('{:12}' + (' ' * 10)).format(Color.YELLOW + Color.UNDERLINE + column_b + Color.END))
     for x, y in zip(main, accessories):
         s = indent + ' {:20} ' + (' ' * 10) + '{:20}'
