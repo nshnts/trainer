@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import numpy as np
 
 
@@ -17,22 +18,37 @@ def get_optimal_align_size(lifts):
     return max(sum(sum(lengths, []), [])) + 3 # pad with extra 3 spaces
 
 
+def get_lifts_for_day(lifts):
+    x = []
+    for excs in lifts:
+        idx = np.random.randint(0, len(excs))
+        x.append(excs[idx])
+    return x
+
+
+def day_program(lifts, mode):
+
+    is_main_mode = mode == 'm'
+    indent = ' ' * 10
+    align = get_optimal_align_size(lifts)
+    print()
+    print(Color.GREEN + indent + ('Main Day' if is_main_mode else 'Accessory Day') + Color.END)
+    for x in get_lifts_for_day(lifts[0] if is_main_mode else lifts[1]):
+        print(indent + x)
+    print()
+
+
 def create_weekly_program(lifts, n_days=4):
 
     main, accessories = lifts
     if n_days % 2 != 0:
        raise ValueError('Cannot have odd-numbered workouts in a week')
 
-    days = [[] for _ in range(n_days)]
+    days = []
 
     for i in range(int(n_days / 2)):
-       for excs in main:
-          idx = np.random.randint(0, len(excs))
-          days[i*2].append(excs[idx])
-
-       for excs in accessories:
-          idx = np.random.randint(0, len(excs))
-          days[i*2 + 1].append(excs[idx])
+       days.append(get_lifts_for_day(main))
+       days.append(get_lifts_for_day(accessories))
 
        diff = len(days[i*2]) - len(days[i*2 + 1])
        if diff > 0:
@@ -58,6 +74,16 @@ def create_weekly_program(lifts, n_days=4):
 
 def main():
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-m", "--mode", default='w', help="main, accessory or full week schedule")
+    args = parser.parse_args()
+    if args.mode not in [
+            'w', # full week schedule
+            'm', # main day
+            'a'  # accessory day
+    ]:
+        raise ValueError('Wrong mode')
+
     lifts = [
         [ # main lifts
            [ 'Squat', 'Front Squat', 'Pause Squat', 'Pause Front Squat'   ], # squat
@@ -73,7 +99,10 @@ def main():
         ]
     ]
 
-    create_weekly_program(lifts)
+    if args.mode == 'w':
+        create_weekly_program(lifts)
+    else:
+        day_program(lifts, args.mode)
 
 
 if __name__ == '__main__':
