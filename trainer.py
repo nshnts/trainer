@@ -26,6 +26,16 @@ def get_lifts_for_day(lifts):
     return x
 
 
+def this_lift_has_fixed_rep(lift):
+    ret = None
+    rep = None
+    if isinstance(lift, tuple):
+        ret, rep = lift
+    else:
+        ret = lift
+    return ret, rep
+
+
 def day_program(lifts, mode):
 
     is_main_mode = mode == 'm'
@@ -33,43 +43,24 @@ def day_program(lifts, mode):
     align = get_optimal_align_size(lifts)
     print()
     print(Color.GREEN + indent + ('Main Day' if is_main_mode else 'Accessory Day') + Color.END)
-    for x in get_lifts_for_day(lifts[0] if is_main_mode else lifts[1]):
-        print(indent + x)
+    for lift in get_lifts_for_day(lifts[0] if is_main_mode else lifts[1]):
+        x, rep = this_lift_has_fixed_rep(lift)
+        if rep is None:
+            rep = np.random.randint(1, 4) * 4 if is_main_mode else 10
+        print(indent + ('{:' + str(align) + '}').format(x) + '  ' +
+              '[ {:2} ]'.format(rep))
     print()
 
 
 def create_weekly_program(lifts, n_days=4):
 
-    main, accessories = lifts
-    if n_days % 2 != 0:
-       raise ValueError('Cannot have odd-numbered workouts in a week')
+    is_main_mode = True
+    main_mode = 'm'
+    accessory_mode = 'a'
 
-    days = []
-
-    for i in range(int(n_days / 2)):
-       days.append(get_lifts_for_day(main))
-       days.append(get_lifts_for_day(accessories))
-
-       diff = len(days[i*2]) - len(days[i*2 + 1])
-       if diff > 0:
-           days[i*2 + 1].extend([ ' ' ] * diff)
-       elif -diff > 0:
-          days[i*2].extend([ ' ' ] * -diff)
-
-    indent = ' ' * 10
-    align = get_optimal_align_size(lifts)
-
-    s = '\n{}' + ''.join(['{:' + str(align) + '}'] * n_days)
-    days_str = [('Day '+str(i+1)) for i in range(n_days)]
-    print(Color.GREEN + s.format(indent, *days_str) + Color.END)
-    n_rows = len(days[0])
-    for row in range(n_rows):
-        line = indent
-        for day in days:
-            s = line + '{:<' + str(align) + '}'
-            line = s.format(day[row])
-        print(line)
-    print('\n')
+    for i in range(n_days):
+        day_program(lifts, main_mode if is_main_mode else accessory_mode)
+        is_main_mode = not is_main_mode
 
 
 def main():
@@ -84,18 +75,18 @@ def main():
     ]:
         raise ValueError('Wrong mode')
 
-    lifts = [
+    lifts =  [
         [ # main lifts
-           [ 'Squat', 'Front Squat', 'Pause Squat', 'Pause Front Squat'   ], # squat
-           [ 'Deadlift', 'Romanian Deadlift', 'Single-Leg Deadlift'       ], # deadlift
-           [ 'Bench', 'DB Bench', 'CG Bench', 'Pause Bench'               ], # bench
-           [ 'T-Bar Row', 'DB Row', 'Pull-Up', 'Power Clean'              ]  # pull
+            ( 'Squat', 'Front Squat', 'Pause Squat', 'Pause Front Squat' ), # squat
+            ( 'Deadlift', 'Romanian Deadlift', 'Stiff-Legged Deadlift'   ), # deadlift
+            ( 'Bench', ('DB Bench', 8), 'CG Bench', 'Pause Bench'        ), # bench
+            ( 'T-Bar Row', ('DB Row', 8), 'Pull-Up', ('Power Clean', 4)  )  # pull
         ],
         [ # accessories
-            [ 'Press', 'DB Press', 'Seated Press', 'Front Raise'           ], # shoulder
-            [ 'EZ-Bar Curl', 'DB Curl', 'BB Curl', 'Hammer Curl'           ], # bi
-            [ 'Dip', 'LTE', 'DB LTE', 'Ring Push-Up'                       ], # tri
-            [ 'Torque', 'Hanging Leg Raise', 'Sit-Up', 'Plank'             ]  # abs
+            ( 'Press', 'DB Press', 'Seated Press', 'Front Raise'        ), # shoulder
+            ( 'EZ-Bar Curl', 'DB Curl', 'BB Curl', 'Hammer Curl'        ), # bi
+            ( 'Dip', 'LTE', 'DB LTE', 'Ring Push-Up'                    ), # tri
+            ( 'Torque', 'Hanging Leg Raise', 'Sit-Up', 'Plank'          )  # abs
         ]
     ]
 
