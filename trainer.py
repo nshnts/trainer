@@ -80,12 +80,13 @@ def main():
             ( 'Squat', 'Front Squat', 'Pause Squat', 'Pause Front Squat' ), # squat
             ( 'Deadlift', 'Romanian Deadlift', 'Stiff-Legged Deadlift'   ), # deadlift
             ( 'Bench', ('DB Bench', 8), 'CG Bench', 'Pause Bench'        ), # bench
-            ( 'T-Bar Row', ('DB Row', 8), 'Pull-Up', ('Power Clean', 4)  )  # pull
+            ( 'T-Bar Row', 'Pull-Up'                                     )  # pull
         ],
         [ # accessories
             ( 'Press', 'DB Press', 'Seated Press', 'Front Raise'        ), # shoulder
             ( 'EZ-Bar Curl', 'DB Curl', 'BB Curl', 'Hammer Curl'        ), # bi
-            ( 'Dip', 'LTE', 'DB LTE', 'Ring Push-Up'                    ), # tri
+            ( 'Dip', 'LTE', 'DB LTE', 'Push-Up'                         ), # tri
+            ( 'DB Row', ('Power Clean', 4)                              ), # pull
             ( 'Torque', 'Hanging Leg Raise', 'Sit-Up', 'Plank'          )  # abs
         ]
     ]
