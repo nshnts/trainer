@@ -4,12 +4,14 @@ import numpy as np
 
 
 class Color:
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    END = '\033[0m'
+
+    use_colors = True
+    GREEN = '\033[92m'    if use_colors else ''
+    YELLOW = '\033[93m'   if use_colors else ''
+    RED = '\033[91m'      if use_colors else ''
+    BOLD = '\033[1m'      if use_colors else ''
+    UNDERLINE = '\033[4m' if use_colors else ''
+    END = '\033[0m'       if use_colors else ''
 
 
 def get_optimal_align_size(lifts):
