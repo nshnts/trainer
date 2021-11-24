@@ -15,7 +15,8 @@ import numpy as np
 
 
 # Each lift entry is a tuple of main lifts and accessory lifts. 
-# You'll notice that some lifts are repeated. It's to make sure it gets picked up more often by the random picker. 
+# You'll notice that some lifts are repeated. These primary lifts should get picked up more often by the random picker.
+# Rule of thumb is that the primary lift should get picked up more than half the time. 
 lifts = {
     "squat": (
         ["squat", "squat", "squat", "pause squat", "front squat", "pause front squat"],
@@ -91,11 +92,11 @@ def day_program(is_development_block, is_squat_day, is_maintenance_day=False):
     maintenance_reps = 10
     
     is_main_mode = is_squat_day
-    header_indent = ' ' * 4
-    indent = ' ' * 8
+    indent = ' ' * 4
     align = 20
-    print()
-    print(Color.GREEN + header_indent + ('Squat' if is_main_mode else 'Deadlift') + Color.END)
+
+    print(Color.GREEN + indent + ('Squat' if is_main_mode else 'Deadlift') + Color.END)
+    indent *= 2
     for group, exercises in lifts.items():
         if is_squat_day and group == "deadlift":
             continue
@@ -117,7 +118,9 @@ def day_program(is_development_block, is_squat_day, is_maintenance_day=False):
         for exercises in maintenance_exercises:
             random_l = get_random_lift(exercises)
             print_lift_row(random_l, maintenance_reps, indent)
-    print()
+
+    # everyday is clubbell day :-)
+    print_lift_row("clubbell", maintenance_reps, indent)
 
     
 def print_program(is_development_block, is_squat_day):
